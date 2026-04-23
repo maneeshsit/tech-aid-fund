@@ -14,7 +14,86 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      pledges: {
+        Row: {
+          amount: number
+          cadence: string
+          created_at: string
+          email: string
+          id: string
+          name: string
+          status: string
+          tier_id: string | null
+          user_id: string | null
+        }
+        Insert: {
+          amount: number
+          cadence?: string
+          created_at?: string
+          email: string
+          id?: string
+          name: string
+          status?: string
+          tier_id?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          amount?: number
+          cadence?: string
+          created_at?: string
+          email?: string
+          id?: string
+          name?: string
+          status?: string
+          tier_id?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pledges_tier_id_fkey"
+            columns: ["tier_id"]
+            isOneToOne: false
+            referencedRelation: "tiers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tiers: {
+        Row: {
+          amount: number
+          cadence: string
+          created_at: string
+          featured: boolean
+          id: string
+          name: string
+          perks: Json
+          sort_order: number
+          tagline: string
+        }
+        Insert: {
+          amount: number
+          cadence?: string
+          created_at?: string
+          featured?: boolean
+          id: string
+          name: string
+          perks?: Json
+          sort_order?: number
+          tagline: string
+        }
+        Update: {
+          amount?: number
+          cadence?: string
+          created_at?: string
+          featured?: boolean
+          id?: string
+          name?: string
+          perks?: Json
+          sort_order?: number
+          tagline?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
