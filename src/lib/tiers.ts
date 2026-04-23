@@ -23,7 +23,7 @@ export const TIERS: Tier[] = [
       "Funds ~1 day of bridge support per month",
       "Quarterly beneficiary stories",
       "Vote on association partnerships",
-      "Allen·Turing digital member badge",
+      "Paul Allen and Alan Turing digital member badge",
     ],
     featured: true,
   },

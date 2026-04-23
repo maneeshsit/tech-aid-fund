@@ -10,7 +10,7 @@ export function SiteNav() {
             ⊕
           </div>
           <span className="font-display text-lg font-semibold tracking-tight">
-            The Allen·Turing Trust
+            Paul Allen and Alan Turing
           </span>
         </Link>
         <nav className="hidden items-center gap-8 md:flex">

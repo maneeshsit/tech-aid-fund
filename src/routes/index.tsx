@@ -11,13 +11,13 @@ export const Route = createFileRoute("/")({
   component: Index,
   head: () => ({
     meta: [
-      { title: "The Allen·Turing Trust — A solidarity tax for technologists" },
+      { title: "Paul Allen and Alan Turing — A solidarity tax for technologists" },
       {
         name: "description",
         content:
-          "Pay the Paul Allen & Turing Tax. Pool funds to support displaced IT and hi-tech professionals through IEEE and engineering associations.",
+          "Pay the Paul Allen & Alan Turing Tax. Pool funds to support displaced IT and hi-tech professionals through IEEE and engineering associations.",
       },
-      { property: "og:title", content: "The Allen·Turing Trust" },
+      { property: "og:title", content: "Paul Allen and Alan Turing" },
       {
         property: "og:description",
         content: "A community-funded bridge for engineers between jobs.",
@@ -127,7 +127,7 @@ function Mission() {
         The people who build the future deserve a safety net the future built itself.
       </h2>
       <p className="mt-6 text-lg leading-relaxed text-muted-foreground">
-        Layoffs in technology are cyclical, but careers are not. The Allen·Turing Trust collects
+        Layoffs in technology are cyclical, but careers are not. Paul Allen and Alan Turing collects
         small, recurring contributions from working engineers — a "tax" of solidarity — and
         channels them into short-term grants for peers between roles. We honor{" "}
         <span className="font-medium text-foreground">Paul Allen's</span> philanthropic legacy and{" "}
@@ -222,7 +222,7 @@ function Faq() {
   const items = [
     {
       q: "Is this a registered charity?",
-      a: "The Allen·Turing Trust operates as a non-profit fiduciary pool. Disbursements flow through IEEE and partner 501(c)(3) associations who handle direct beneficiary support.",
+      a: "Paul Allen and Alan Turing operates as a non-profit fiduciary pool. Disbursements flow through IEEE and partner 501(c)(3) associations who handle direct beneficiary support.",
     },
     {
       q: "Who qualifies for support?",

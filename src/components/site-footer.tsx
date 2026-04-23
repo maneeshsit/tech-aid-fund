@@ -8,7 +8,7 @@ export function SiteFooter() {
               <div className="flex h-8 w-8 items-center justify-center rounded-md bg-ink text-gold font-display text-lg font-bold">
                 ⊕
               </div>
-              <span className="font-display text-lg font-semibold">The Allen·Turing Trust</span>
+              <span className="font-display text-lg font-semibold">Paul Allen and Alan Turing</span>
             </div>
             <p className="mt-4 max-w-sm text-sm text-muted-foreground">
               A solidarity pool funded by the technology community, supporting displaced IT and
@@ -34,7 +34,7 @@ export function SiteFooter() {
           </div>
         </div>
         <div className="mt-10 flex flex-col items-center justify-between gap-3 border-t border-border/60 pt-6 text-xs text-muted-foreground md:flex-row">
-          <p>© {new Date().getFullYear()} The Allen·Turing Trust. A non-profit initiative.</p>
+          <p>© {new Date().getFullYear()} Paul Allen and Alan Turing. A non-profit initiative.</p>
           <p className="italic">"We can only see a short distance ahead, but we can see plenty there that needs to be done." — A. Turing</p>
         </div>
       </div>
