@@ -54,8 +54,8 @@ function Hero() {
             <Sparkles className="h-3.5 w-3.5" /> A solidarity pool, by builders
           </span>
           <h1 className="mt-6 font-display text-5xl font-semibold leading-[1.05] tracking-tight md:text-6xl lg:text-7xl">
-            Pay the <span className="text-gradient-gold">Paul Allen</span> &{" "}
-            <span className="text-gradient-gold">Turing Tax</span>.
+            <span className="text-gradient-gold">Paul Allen</span> and{" "}
+            <span className="text-gradient-gold">Alan Turing</span>.
           </h1>
           <p className="mt-6 max-w-xl text-lg leading-relaxed text-primary-foreground/75">
             A voluntary contribution from working technologists into a trust pool that funds
