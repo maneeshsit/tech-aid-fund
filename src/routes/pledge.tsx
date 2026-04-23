@@ -18,11 +18,11 @@ export const Route = createFileRoute("/pledge")({
   component: PledgePage,
   head: () => ({
     meta: [
-      { title: "Make your pledge — The Allen·Turing Trust" },
+      { title: "Make your pledge — Paul Allen and Alan Turing" },
       {
         name: "description",
         content:
-          "Choose your monthly contribution to the Allen·Turing solidarity pool supporting displaced technologists.",
+          "Choose your monthly contribution to the Paul Allen and Alan Turing solidarity pool supporting displaced technologists.",
       },
     ],
   }),
