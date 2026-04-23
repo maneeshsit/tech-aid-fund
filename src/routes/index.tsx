@@ -127,7 +127,7 @@ function Mission() {
         The people who build the future deserve a safety net the future built itself.
       </h2>
       <p className="mt-6 text-lg leading-relaxed text-muted-foreground">
-        Layoffs in technology are cyclical, but careers are not. The Allen·Turing Trust collects
+        Layoffs in technology are cyclical, but careers are not. Paul Allen and Alan Turing collects
         small, recurring contributions from working engineers — a "tax" of solidarity — and
         channels them into short-term grants for peers between roles. We honor{" "}
         <span className="font-medium text-foreground">Paul Allen's</span> philanthropic legacy and{" "}
