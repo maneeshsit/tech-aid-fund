@@ -11,13 +11,13 @@ export const Route = createFileRoute("/")({
   component: Index,
   head: () => ({
     meta: [
-      { title: "The Allen·Turing Trust — A solidarity tax for technologists" },
+      { title: "Paul Allen and Alan Turing — A solidarity tax for technologists" },
       {
         name: "description",
         content:
-          "Pay the Paul Allen & Turing Tax. Pool funds to support displaced IT and hi-tech professionals through IEEE and engineering associations.",
+          "Pay the Paul Allen & Alan Turing Tax. Pool funds to support displaced IT and hi-tech professionals through IEEE and engineering associations.",
       },
-      { property: "og:title", content: "The Allen·Turing Trust" },
+      { property: "og:title", content: "Paul Allen and Alan Turing" },
       {
         property: "og:description",
         content: "A community-funded bridge for engineers between jobs.",
