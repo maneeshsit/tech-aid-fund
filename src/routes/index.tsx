@@ -222,7 +222,7 @@ function Faq() {
   const items = [
     {
       q: "Is this a registered charity?",
-      a: "The Allen·Turing Trust operates as a non-profit fiduciary pool. Disbursements flow through IEEE and partner 501(c)(3) associations who handle direct beneficiary support.",
+      a: "Paul Allen and Alan Turing operates as a non-profit fiduciary pool. Disbursements flow through IEEE and partner 501(c)(3) associations who handle direct beneficiary support.",
     },
     {
       q: "Who qualifies for support?",
