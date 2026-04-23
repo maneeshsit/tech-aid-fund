@@ -59,12 +59,16 @@ export const Route = createFileRoute("/pledge")({
 });
 
 function PledgePage() {
-  const { tiers, error: loadError } = Route.useLoaderData();
+  const data = Route.useLoaderData() as { tiers: TierRecord[]; error: string | null };
+  const tiers = data.tiers;
+  const loadError = data.error;
   const { tier: tierParam } = Route.useSearch();
   const submitPledge = useServerFn(createPledge);
 
   const initialTier =
-    tiers.find((t) => t.id === tierParam) ?? tiers.find((t) => t.featured) ?? tiers[0];
+    tiers.find((t: TierRecord) => t.id === tierParam) ??
+    tiers.find((t: TierRecord) => t.featured) ??
+    tiers[0];
 
   const [selectedId, setSelectedId] = useState<string>(initialTier?.id ?? "custom");
   const [customAmount, setCustomAmount] = useState<string>("");
@@ -74,7 +78,7 @@ function PledgePage() {
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
 
-  const selected = tiers.find((t) => t.id === selectedId);
+  const selected = tiers.find((t: TierRecord) => t.id === selectedId);
   const isCustom = selectedId === "custom";
   const amount = isCustom ? Number(customAmount) || 0 : (selected?.amount ?? 0);
 
