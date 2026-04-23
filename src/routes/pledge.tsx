@@ -1,12 +1,13 @@
 import { useState } from "react";
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowLeft, Lock, Shield } from "lucide-react";
+import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
+import { ArrowLeft, Loader2, Lock, Shield } from "lucide-react";
+import { useServerFn } from "@tanstack/react-start";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteNav } from "@/components/site-nav";
-import { TIERS } from "@/lib/tiers";
+import { createPledge, getTiers, type TierRecord } from "@/server/tiers.functions";
 import { cn } from "@/lib/utils";
 
 type PledgeSearch = { tier?: string };
@@ -15,7 +16,36 @@ export const Route = createFileRoute("/pledge")({
   validateSearch: (search: Record<string, unknown>): PledgeSearch => ({
     tier: typeof search.tier === "string" ? search.tier : undefined,
   }),
+  loader: () => getTiers(),
   component: PledgePage,
+  errorComponent: ({ error, reset }) => {
+    const router = useRouter();
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-background px-4 text-center">
+        <div className="max-w-md">
+          <h1 className="font-display text-3xl font-semibold">Something went wrong</h1>
+          <p className="mt-2 text-sm text-muted-foreground">{error.message}</p>
+          <Button
+            className="mt-6"
+            variant="outlineGold"
+            onClick={() => {
+              router.invalidate();
+              reset();
+            }}
+          >
+            Try again
+          </Button>
+        </div>
+      </div>
+    );
+  },
+  notFoundComponent: () => (
+    <div className="flex min-h-screen items-center justify-center">
+      <Link to="/" className="text-gold underline">
+        Go home
+      </Link>
+    </div>
+  ),
   head: () => ({
     meta: [
       { title: "Make your pledge — Paul Allen and Alan Turing" },
@@ -29,22 +59,54 @@ export const Route = createFileRoute("/pledge")({
 });
 
 function PledgePage() {
+  const data = Route.useLoaderData() as { tiers: TierRecord[]; error: string | null };
+  const tiers = data.tiers;
+  const loadError = data.error;
   const { tier: tierParam } = Route.useSearch();
-  const initialTier = TIERS.find((t) => t.id === tierParam) ?? TIERS[1];
-  const [selectedId, setSelectedId] = useState(initialTier.id);
+  const submitPledge = useServerFn(createPledge);
+
+  const initialTier =
+    tiers.find((t: TierRecord) => t.id === tierParam) ??
+    tiers.find((t: TierRecord) => t.featured) ??
+    tiers[0];
+
+  const [selectedId, setSelectedId] = useState<string>(initialTier?.id ?? "custom");
   const [customAmount, setCustomAmount] = useState<string>("");
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
-  const selected = TIERS.find((t) => t.id === selectedId);
+  const selected = tiers.find((t: TierRecord) => t.id === selectedId);
   const isCustom = selectedId === "custom";
   const amount = isCustom ? Number(customAmount) || 0 : (selected?.amount ?? 0);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email || amount < 1) return;
-    setSubmitted(true);
+    if (!email || !name || amount < 1) return;
+    setSubmitting(true);
+    setSubmitError(null);
+    try {
+      const result = await submitPledge({
+        data: {
+          tierId: isCustom ? null : selectedId,
+          name,
+          email,
+          amount: Math.floor(amount),
+          cadence: "month",
+        },
+      });
+      if (result.error || !result.pledge) {
+        setSubmitError(result.error ?? "Something went wrong. Please try again.");
+      } else {
+        setSubmitted(true);
+      }
+    } catch (err) {
+      setSubmitError(err instanceof Error ? err.message : "Unexpected error.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   if (submitted) {
@@ -55,12 +117,14 @@ function PledgePage() {
           <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gold/20 text-gold">
             <Shield className="h-8 w-8" />
           </div>
-          <h1 className="mt-6 font-display text-4xl font-semibold">Thank you, {name || "friend"}.</h1>
+          <h1 className="mt-6 font-display text-4xl font-semibold">
+            Thank you, {name || "friend"}.
+          </h1>
           <p className="mt-4 max-w-md text-muted-foreground">
-            Your pledge of <span className="font-semibold text-foreground">${amount}/month</span> has
-            been recorded. We've sent a confirmation to{" "}
-            <span className="font-medium text-foreground">{email}</span>. Payment processing will be
-            wired in next.
+            Your pledge of <span className="font-semibold text-foreground">${amount}/month</span>{" "}
+            has been recorded. We've sent a confirmation to{" "}
+            <span className="font-medium text-foreground">{email}</span>. Payment processing will
+            be wired in next.
           </p>
           <Button asChild variant="outlineGold" size="lg" className="mt-8">
             <Link to="/">Back to home</Link>
@@ -90,11 +154,17 @@ function PledgePage() {
               Choose a tier and your monthly contribution begins on the 1st of next month.
             </p>
 
+            {loadError && (
+              <p className="mt-4 rounded-md border border-destructive/40 bg-destructive/10 p-3 text-sm text-destructive">
+                {loadError}
+              </p>
+            )}
+
             <form onSubmit={handleSubmit} className="mt-10 space-y-8">
               <div>
                 <h2 className="font-display text-xl font-semibold">1. Select tier</h2>
                 <div className="mt-4 grid gap-3 sm:grid-cols-2">
-                  {TIERS.map((t) => (
+                  {tiers.map((t: TierRecord) => (
                     <button
                       type="button"
                       key={t.id}
@@ -155,6 +225,7 @@ function PledgePage() {
                     <Label htmlFor="name">Full name</Label>
                     <Input
                       id="name"
+                      required
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                       placeholder="Ada Lovelace"
@@ -176,9 +247,25 @@ function PledgePage() {
                 </div>
               </div>
 
-              <Button type="submit" variant="hero" size="xl" className="w-full">
-                <Lock className="h-5 w-5" />
-                Confirm pledge of ${amount || 0}/month
+              {submitError && (
+                <p className="rounded-md border border-destructive/40 bg-destructive/10 p-3 text-sm text-destructive">
+                  {submitError}
+                </p>
+              )}
+
+              <Button
+                type="submit"
+                variant="hero"
+                size="xl"
+                className="w-full"
+                disabled={submitting || amount < 1}
+              >
+                {submitting ? (
+                  <Loader2 className="h-5 w-5 animate-spin" />
+                ) : (
+                  <Lock className="h-5 w-5" />
+                )}
+                {submitting ? "Recording..." : `Confirm pledge of $${amount || 0}/month`}
               </Button>
               <p className="text-center text-xs text-muted-foreground">
                 You can cancel or modify your pledge at any time.
@@ -202,7 +289,7 @@ function PledgePage() {
               </li>
               <li className="flex justify-between">
                 <span className="text-muted-foreground">Engineers helped per year</span>
-                <span className="font-semibold">{(amount * 12 / 200).toFixed(1)}</span>
+                <span className="font-semibold">{((amount * 12) / 200).toFixed(1)}</span>
               </li>
               <li className="flex justify-between">
                 <span className="text-muted-foreground">Annual contribution</span>

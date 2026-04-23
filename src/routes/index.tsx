@@ -1,14 +1,43 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
 import { ArrowRight, Heart, Landmark, Shield, Sparkles, Users, Cpu, HandCoins } from "lucide-react";
 import heroImg from "@/assets/hero-pioneers.jpg";
 import { Button } from "@/components/ui/button";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteNav } from "@/components/site-nav";
 import { TierCard } from "@/components/tier-card";
-import { TIERS } from "@/lib/tiers";
+import { getTiers } from "@/server/tiers.functions";
 
 export const Route = createFileRoute("/")({
   component: Index,
+  loader: () => getTiers(),
+  errorComponent: ({ error, reset }) => {
+    const router = useRouter();
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-background px-4 text-center">
+        <div className="max-w-md">
+          <h1 className="font-display text-3xl font-semibold">Something went wrong</h1>
+          <p className="mt-2 text-sm text-muted-foreground">{error.message}</p>
+          <Button
+            className="mt-6"
+            variant="outlineGold"
+            onClick={() => {
+              router.invalidate();
+              reset();
+            }}
+          >
+            Try again
+          </Button>
+        </div>
+      </div>
+    );
+  },
+  notFoundComponent: () => (
+    <div className="flex min-h-screen items-center justify-center">
+      <Link to="/" className="text-gold underline">
+        Go home
+      </Link>
+    </div>
+  ),
   head: () => ({
     meta: [
       { title: "Paul Allen and Alan Turing — A solidarity tax for technologists" },
@@ -29,6 +58,7 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
+  const { tiers, error } = Route.useLoaderData();
   return (
     <div className="min-h-screen bg-background">
       <SiteNav />
@@ -36,7 +66,7 @@ function Index() {
       <Stats />
       <Mission />
       <HowItWorks />
-      <Tiers />
+      <Tiers tiers={tiers} error={error} />
       <Faq />
       <CtaBand />
       <SiteFooter />
@@ -194,7 +224,13 @@ function HowItWorks() {
   );
 }
 
-function Tiers() {
+function Tiers({
+  tiers,
+  error,
+}: {
+  tiers: { id: string; name: string; tagline: string; amount: number; cadence: string; perks: string[]; featured: boolean }[];
+  error: string | null;
+}) {
   return (
     <section id="tiers" className="container mx-auto max-w-6xl px-6 py-24">
       <div className="mx-auto max-w-2xl text-center">
@@ -209,11 +245,15 @@ function Tiers() {
           career stage and conviction.
         </p>
       </div>
-      <div className="mt-16 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-        {TIERS.map((tier) => (
-          <TierCard key={tier.id} tier={tier} />
-        ))}
-      </div>
+      {error ? (
+        <p className="mt-12 text-center text-sm text-muted-foreground">{error}</p>
+      ) : (
+        <div className="mt-16 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+          {tiers.map((tier) => (
+            <TierCard key={tier.id} tier={tier} />
+          ))}
+        </div>
+      )}
     </section>
   );
 }
